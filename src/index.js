@@ -117,6 +117,10 @@ function convertFieldsFromGlobalId(Model, data) {
   });
 }
 
+function isSingleAssociation(atype){
+  return (atype === "BelongsTo" || atype === "HasOne");
+}
+
 function _createRecord({
   mutations,
   Model,
@@ -169,7 +173,7 @@ function _createRecord({
           key: field
         } = a;
         // console.log("Edge To", Model.name, "From", from, field, atype);
-        if (atype !== "BelongsTo") {
+        if (!isSingleAssociation(atype)) {
           // HasMany Association
           let {connection} = associationsFromModel[from][`${Model.name}_${field}`];
           let fromType = ModelTypes[from];
@@ -191,7 +195,7 @@ function _createRecord({
           key: field
         } = a;
         // console.log("Edge From", Model.name, "To", to, field, as, atype, foreignKey);
-        if (atype === "BelongsTo") {
+        if (isSingleAssociation(atype)) {
           // BelongsTo association
           let toType = ModelTypes[to];
           output[field] = {
@@ -312,7 +316,7 @@ function _updateRecords({
           key: field
         } = a;
         // console.log("Edge To", Model.name, "From", from, field, atype);
-        if (atype !== "BelongsTo") {
+        if (!isSingleAssociation(atype)) {
           // HasMany Association
           let {connection} = associationsFromModel[from][`${Model.name}_${field}`];
           let fromType = ModelTypes[from];
@@ -331,7 +335,7 @@ function _updateRecords({
           key: field
         } = a;
         // console.log("Edge From", Model.name, "To", to, field, as, atype, foreignKey);
-        if (atype === "BelongsTo") {
+        if (isSingleAssociation(atype)) {
           // BelongsTo association
           let toType = ModelTypes[to];
           output[field] = {
@@ -447,7 +451,7 @@ function _updateRecord({
           key: field
         } = a;
         // console.log("Edge To", Model.name, "From", from, field, atype);
-        if (atype !== "BelongsTo") {
+        if (!isSingleAssociation(atype)) {
           // HasMany Association
           let {connection} = associationsFromModel[from][`${Model.name}_${field}`];
           let fromType = ModelTypes[from];
@@ -466,7 +470,7 @@ function _updateRecord({
           key: field
         } = a;
         // console.log("Edge From", Model.name, "To", to, field, as, atype, foreignKey);
-        if (atype === "BelongsTo") {
+        if (isSingleAssociation(atype)) {
           // BelongsTo association
           let toType = ModelTypes[to];
           output[field] = {
@@ -639,7 +643,7 @@ function getSchema(sequelize, options) {
           let atype = association.associationType;
           let target = association.target;
           let targetType = ModelTypes[target.name];
-          if (atype === "BelongsTo") {
+          if (isSingleAssociation(atype)) {
             fields[akey] = {
               type: targetType,
               resolve: resolver(association, {
@@ -752,7 +756,7 @@ function getSchema(sequelize, options) {
       let as = association.as;
       let targetType = ModelTypes[target.name];
       const connectionName = connectionNameForAssociation(Model, akey);
-      if (atype === "BelongsTo") {
+      if (isSingleAssociation(atype)) {
         // BelongsTo
         _.set(associationsToModel, `${targetType.name}.${akey}`, {
           from: Model.name,
