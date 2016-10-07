@@ -217,13 +217,15 @@ function _createRecord({
 function _findRecord({
   queries,
   Model,
-  modelType
+  modelType,
+  options
 }) {
   let findByIdQueryName = queryName(Model, 'findById'); //`find${Model.name}ById`;
   queries[findByIdQueryName] = {
     type: modelType,
-    args: defaultArgs(Model),
+    args: defaultArgs(Model, options),
     resolve: resolver(Model, {
+      globalId: options.globalId
     })
   };
 }
@@ -613,10 +615,11 @@ function _deleteRecord({
 
 }
 
-function getSchema(sequelize) {
+function getSchema(sequelize, options) {
 
   const {nodeInterface, nodeField, nodeTypeMapper} = sequelizeNodeInterface(sequelize);
 
+  options = options || {};
   const Models = sequelize.models;
   const queries = {};
   const mutations = {};
@@ -681,7 +684,8 @@ function getSchema(sequelize) {
     _findRecord({
       queries,
       Model,
-      modelType
+      modelType,
+      options
     });
 
     // READ all
