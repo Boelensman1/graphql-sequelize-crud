@@ -237,7 +237,8 @@ function _findRecord({
 function _findAll({
   queries,
   Model,
-  modelType
+  modelType,
+  options
 }) {
   let findAllQueryName = queryName(Model, 'findAll');
   queries[findAllQueryName] = {
