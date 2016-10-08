@@ -243,7 +243,9 @@ function _findAll({
   queries[findAllQueryName] = {
     type: new GraphQLList(modelType),
     args: defaultListArgs(Model),
-    resolve: resolver(Model)
+    resolve: resolver(Model, {
+      globalId: options.globalId
+    })
   };
 }
 
@@ -696,7 +698,8 @@ function getSchema(sequelize, options) {
     _findAll({
       queries,
       Model,
-      modelType
+      modelType,
+      options
     });
 
     // UPDATE single
