@@ -14,6 +14,7 @@ const {
 const _ = require('lodash');
 const pluralize = require('pluralize');
 const camelcase = require('camelcase');
+const Sequelize = require('sequelize');
 
 const {
   fromGlobalId,
@@ -25,6 +26,7 @@ const {
   defaultArgs,
   defaultListArgs,
   attributeFields,
+  typeMapper,
   resolver,
   relay: {
     sequelizeNodeInterface,
@@ -33,6 +35,15 @@ const {
 } = require("graphql-sequelize");
 
 const jsonType = require("graphql-sequelize/lib/types/jsonType.js");
+
+typeMapper.mapType((type) => {
+   //map bools as strings
+   if (type instanceof Sequelize.JSON) {
+     return jsonType 
+   }
+   //use default for everything else
+   return false
+});
 
 function connectionNameForAssociation(Model, associationName) {
   return camelcase(`${Model.name}_${associationName}`);
