@@ -39,7 +39,7 @@ const jsonType = require("graphql-sequelize/lib/types/jsonType.js");
 typeMapper.mapType((type) => {
    //map bools as strings
    if (type instanceof Sequelize.JSON) {
-     return jsonType 
+     return jsonType.default; 
    }
    //use default for everything else
    return false
