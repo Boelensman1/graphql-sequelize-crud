@@ -121,6 +121,10 @@ function isSingleAssociation(atype){
   return (atype === "BelongsTo" || atype === "HasOne");
 }
 
+function addAttributeFieldOptions(Model){
+  return Model.attributeFieldOptions || {}; 
+}
+
 function _createRecord({
   mutations,
   Model,
@@ -136,11 +140,11 @@ function _createRecord({
     name: createMutationName,
     description: `Create ${Model.name} record.`,
     inputFields: () => {
-      let fields = attributeFields(Model, {
+      let fields = attributeFields(Model, _.assign({
         commentToDescription: true,
         // exclude: [Model.primaryKeyAttribute],
         cache
-      });
+      }, addAttributeFieldOptions(Model)));
 
       convertFieldsToGlobalId(Model, fields);
 
@@ -265,11 +269,11 @@ function _updateRecords({
     name: updateMutationName,
     description: `Update multiple ${Model.name} records.`,
     inputFields: () => {
-      let fields = attributeFields(Model, {
+      let fields = attributeFields(Model, _.assign({
         commentToDescription: true,
         allowNull: true,
         cache
-      });
+      }, addAttributeFieldOptions(Model)));
 
       convertFieldsToGlobalId(Model, fields);
 
@@ -408,11 +412,11 @@ function _updateRecord({
     name: updateMutationName,
     description: `Update a single ${Model.name} record.`,
     inputFields: () => {
-      let fields = attributeFields(Model, {
+      let fields = attributeFields(Model, _.assign({
         commentToDescription: true,
         allowNull: true,
         cache
-      });
+      }, addAttributeFieldOptions(Model)));
 
       convertFieldsToGlobalId(Model, fields);
 
@@ -534,11 +538,11 @@ function _deleteRecords({
     name: deleteMutationName,
     description: `Delete ${Model.name} records.`,
     inputFields: () => {
-      let fields = attributeFields(Model, {
+      let fields = attributeFields(Model, _.assign({
         commentToDescription: true,
         allowNull: true,
         cache
-      });
+      }, addAttributeFieldOptions(Model)));
       convertFieldsToGlobalId(Model, fields);
       var DeleteModelWhereType = new GraphQLInputObjectType({
         name: `Delete${Model.name}WhereInput`,
@@ -665,11 +669,11 @@ function getSchema(sequelize, options) {
           return fields;
         },
           // Attribute fields
-          attributeFields(Model, {
+          attributeFields(Model, _.assign({
             globalId: true,
             commentToDescription: true,
             cache
-          })
+          }, addAttributeFieldOptions(Model)))
         );
       },
       interfaces: [nodeInterface]
@@ -782,11 +786,11 @@ function getSchema(sequelize, options) {
         if (atype === "BelongsToMany") {
           let aModel = association.through.model;
           // console.log('BelongsToMany model', aModel);
-          edgeFields = attributeFields(aModel, {
+          edgeFields = attributeFields(aModel, _.assign({
             globalId: true,
             commentToDescription: true,
             cache
-          });
+          }, addAttributeFieldOptions(aModel)));
           // Pass Through model to resolve function
           _.each(edgeFields, (edgeField, field) => {
             let oldResolve = edgeField.resolve;
