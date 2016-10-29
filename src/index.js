@@ -216,7 +216,7 @@ function _createRecord({
           output[field] = {
             type: toType,
             resolve: (args,e,context,info) => {
-              return resolver(Models[toType.name], {
+              return resolver(Model[toType.name].target, {
               })({}, { id: args[foreignKey] }, context, info);
             }
           };
@@ -359,7 +359,7 @@ function _updateRecords({
           output[field] = {
             type: toType,
             resolve: (args,e,context,info) => {
-              return resolver(Models[toType.name], {
+              return resolver(Model[toType.name].target, {
               })({}, { id: args[foreignKey] }, context, info);
             }
           };
@@ -494,7 +494,7 @@ function _updateRecord({
           output[field] = {
             type: toType,
             resolve: (args,e,context,info) => {
-              return resolver(Models[toType.name], {
+              return resolver(Model[toType.name].target, {
               })({}, { id: args[foreignKey] }, context, info);
             }
           };
