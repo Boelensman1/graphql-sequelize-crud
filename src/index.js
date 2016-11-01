@@ -889,7 +889,7 @@ function getSchema(sequelize, options) {
         // Cite: https://github.com/facebook/relay/issues/112#issuecomment-170648934
         type: new GraphQLNonNull(Queries),
         description: "Self-Pointer from Root to Root",
-        resolve: () => ({})
+        resolve: ({request}) => ({request})
       },
       ...queries,
       node: nodeField
