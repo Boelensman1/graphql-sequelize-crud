@@ -892,10 +892,25 @@ function getSchema(sequelize, options) {
         resolve: ({request}) => ({request})
       },
       ...queries,
+//      viewer: viewer,
       node: nodeField
     })
   });
 
+  // TODO: remove this query from this library later as this is using knowledge about user model name and request user populated by expressjwt
+  /*const viewer = {
+    type: new GraphQLObjectType({
+      name: "Viewer",
+      description: "Viewer Object",
+      fields: {
+        id: {type: GraphQLID, resolve: ({request}) => (request.user ? new Buffer('User:' + request.user.id, 'utf8').toString('base64') : null)}, 
+        ...queries,
+      },
+    }),
+    description: "Viewer Query",
+    resolve: ({request}) => ({request})
+  }*/
+  
   const Mutations = new GraphQLObjectType({
     name: "Mutations",
     fields: {
