@@ -9,7 +9,8 @@ const {
   GraphQLNonNull,
   GraphQLBoolean,
   GraphQLInputObjectType,
-  GraphQLID
+  GraphQLID,
+  GraphQLEnumType,
 } = require('graphql');
 const _ = require('lodash');
 const pluralize = require('pluralize');
@@ -673,7 +674,7 @@ function getSchema(sequelize, options) {
             const connection = ModelTypes[connectionName];
             fields[akey] = {
               type: connection.connectionType,
-              args: connection.connectionArgs,
+              args: target.customConnectionArgs? {...connection.connectionArgs, ...(_.mapValues(target.customConnectionArgs, (arg) => ({type: arg.graphQLType})))} : connection.connectionArgs,
               resolve: connection.resolve
             };
           }
@@ -837,6 +838,23 @@ function getSchema(sequelize, options) {
               }
             }
           },
+          where: (key, value) => {
+            if(target.customConnectionArgs) {
+              target.customConnectionArgs[key].whrClause(value);
+            } else {
+              // TODO: the following should have worked but not working so figure it out...
+              //{[key]: value};
+              let obj = {};
+              obj[key] = value;
+              return obj;
+            }
+          },
+          orderBy: new GraphQLEnumType({
+            name: connectionName + 'ConnectionOrder',
+            values: _.assign({
+              ID: {value: [target.primaryKeyAttribute, 'ASC']},
+            }, target.customOrderEnums || {})
+          }),
           edgeFields
         });
         ModelTypes[connectionName] = connection;
