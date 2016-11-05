@@ -827,6 +827,8 @@ function getSchema(sequelize, options) {
           name: connectionName,
           nodeType: targetType,
           target: association,
+          //TODO: change it later as we should probably use jsonType
+          where: (key, value) => ({[key]: value}),
           connectionFields: {
             total: {
               type: new GraphQLNonNull(GraphQLInt),
