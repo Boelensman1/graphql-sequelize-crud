@@ -21,7 +21,7 @@ const {
   fromGlobalId,
   globalIdField,
   mutationWithClientMutationId
-} = require("graphql-relay");
+} = require('graphql-relay');
 
 const {
   defaultArgs,
@@ -33,9 +33,9 @@ const {
     sequelizeNodeInterface,
     sequelizeConnection
   }
-} = require("graphql-sequelize");
+} = require('graphql-sequelize');
 
-const jsonType = require("graphql-sequelize/lib/types/jsonType.js");
+const jsonType = require('graphql-sequelize/lib/types/jsonType.js');
 
 typeMapper.mapType((type) => {
    //map bools as strings
@@ -43,7 +43,7 @@ typeMapper.mapType((type) => {
      return jsonType.default; 
    }
    //use default for everything else
-   return false
+   return false;
 });
 
 function connectionNameForAssociation(Model, associationName) {
@@ -90,7 +90,7 @@ function mutationName(Model, type) {
 function convertFieldsToGlobalId(Model, fields) {
   // Fix Relay Global ID
   _.each(Object.keys(Model.rawAttributes), (k) => {
-    if (k === "clientMutationId") {
+    if (k === 'clientMutationId') {
       return;
     }
     // Check if reference attribute
@@ -111,7 +111,7 @@ function convertFieldsToGlobalId(Model, fields) {
 function convertFieldsFromGlobalId(Model, data) {
   // Fix Relay Global ID
   _.each(Object.keys(data), (k) => {
-    if (k === "clientMutationId") {
+    if (k === 'clientMutationId') {
       return;
     }
     // Check if reference attribute
@@ -130,7 +130,7 @@ function convertFieldsFromGlobalId(Model, data) {
 }
 
 function isSingleAssociation(atype){
-  return (atype === "BelongsTo" || atype === "HasOne");
+  return (atype === 'BelongsTo' || atype === 'HasOne');
 }
 
 function addAttributeFieldOptions(Model){
@@ -292,14 +292,14 @@ function _updateRecords({
       let updateModelTypeName = `Update${Model.name}ValuesInput`;
       let UpdateModelValuesType = cache[updateModelTypeName] || new GraphQLInputObjectType({
         name: updateModelTypeName,
-        description: "Values to update",
+        description: 'Values to update',
         fields
       });
       cache[updateModelTypeName] = UpdateModelValuesType;
 
       var UpdateModelWhereType = new GraphQLInputObjectType({
         name: `Update${Model.name}WhereInput`,
-        description: "Options to describe the scope of the search.",
+        description: 'Options to describe the scope of the search.',
         fields
       });
 
@@ -435,7 +435,7 @@ function _updateRecord({
       let updateModelInputTypeName = `Update${Model.name}ValuesInput`;
       let UpdateModelValuesType = cache[updateModelInputTypeName] || new GraphQLInputObjectType({
         name: updateModelInputTypeName,
-        description: "Values to update",
+        description: 'Values to update',
         fields
       });
       cache[updateModelInputTypeName] = UpdateModelValuesType;
@@ -558,7 +558,7 @@ function _deleteRecords({
       convertFieldsToGlobalId(Model, fields);
       var DeleteModelWhereType = new GraphQLInputObjectType({
         name: `Delete${Model.name}WhereInput`,
-        description: "Options to describe the scope of the search.",
+        description: 'Options to describe the scope of the search.',
         fields
       });
       return {
@@ -795,7 +795,7 @@ function getSchema(sequelize, options) {
       } else {
         // HasMany
         let edgeFields = {};
-        if (atype === "BelongsToMany") {
+        if (atype === 'BelongsToMany') {
           let aModel = association.through.model;
           // console.log('BelongsToMany model', aModel);
           edgeFields = attributeFields(aModel, _.assign({
@@ -840,7 +840,7 @@ function getSchema(sequelize, options) {
           },
           where: (key, value) => {
             if(target.customConnectionArgs) {
-              target.customConnectionArgs[key].whrClause(value);
+              return target.customConnectionArgs[key].whrClause(value);
             } else {
               // TODO: the following should have worked but not working so figure it out...
               //{[key]: value};
@@ -900,13 +900,13 @@ function getSchema(sequelize, options) {
   });
 
   const Queries = new GraphQLObjectType({
-    name: "Root",
-    description: "Root of the Schema",
+    name: 'Root',
+    description: 'Root of the Schema',
     fields: () => ({
       root: {
         // Cite: https://github.com/facebook/relay/issues/112#issuecomment-170648934
         type: new GraphQLNonNull(Queries),
-        description: "Self-Pointer from Root to Root",
+        description: 'Self-Pointer from Root to Root',
         resolve: ({request}) => ({request})
       },
       ...queries,
@@ -915,7 +915,7 @@ function getSchema(sequelize, options) {
   });
 
   const Mutations = new GraphQLObjectType({
-    name: "Mutations",
+    name: 'Mutations',
     fields: {
       ...mutations
     }
