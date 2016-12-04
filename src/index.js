@@ -927,7 +927,7 @@ function getSchema(sequelize, options) {
     }
   });
 
-  return new GraphQLSchema({
+  return ({
     query: Queries,
     mutation: Mutations
   });
